@@ -18,7 +18,7 @@ Source1:        create-tarball.sh
 Patch0:         0001-added-an-unclean-shut-down-that-s-a-whole-lot-faster.patch
 
 BuildRequires:  maven-local
-BuildRequires:  mvn(org.sonatype.oss:oss-parent)
+BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
 
 BuildArch:      noarch
 
