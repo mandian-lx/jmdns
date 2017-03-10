@@ -1,7 +1,8 @@
 %{?_javapackages_macros:%_javapackages_macros}
+
 Name:           jmdns
 Version:        3.4.1
-Release:        7.2
+Release:        12.1
 Summary:        Java implementation of multi-cast DNS
 Group:          Development/Java
 # The project was originally developed under the GNU
@@ -12,12 +13,14 @@ License:        ASL 2.0 and LGPLv2+
 URL:            http://jmdns.sourceforge.net/
 # sh create-tarball.sh
 Source0:        %{name}-%{version}.tar.gz
-Source1:        create-tarball.sh
+#Source1:       create-tarball.sh
 # faster (unclean) shutdown, used by Jenkins
 # https://github.com/jenkinsci/jmdns/commit/4d56e6f0f0c230b14f1353252ae3d42ff7a5b27c
 Patch0:         0001-added-an-unclean-shut-down-that-s-a-whole-lot-faster.patch
 
 BuildRequires:  maven-local
+BuildRequires:  mvn(org.apache.felix:maven-bundle-plugin)
+BuildRequires:  mvn(org.codehaus.mojo:buildnumber-maven-plugin)
 BuildRequires:  mvn(org.sonatype.oss:oss-parent:pom:)
 
 BuildArch:      noarch
@@ -47,6 +50,9 @@ sed -i "s,59 Temple Place,51 Franklin Street,;s,Suite 330,Fifth Floor,;s,02111-1
 chmod -x README.txt LICENSE-LGPL.txt
 sed -i 's/\r//' LICENSE-LGPL.txt
 
+# Remove duplicate jar execution
+%pom_xpath_remove "pom:plugin[pom:artifactId='maven-jar-plugin']/pom:executions"
+
 %mvn_alias : "org.jenkins-ci:jmdns"
 
 %build
@@ -58,13 +64,29 @@ sed -i 's/\r//' LICENSE-LGPL.txt
 
 
 %files -f .mfiles
-%dir %{_javadir}/%{name}
-%doc LICENSE LICENSE-LGPL.txt NOTICE.txt README.txt
+%doc LICENSE LICENSE-LGPL.txt NOTICE.txt
+%doc README.txt
+
 %files javadoc -f .mfiles-javadoc
-%doc LICENSE LICENSE-LGPL.txt NOTICE.txt README.txt
+%doc LICENSE LICENSE-LGPL.txt NOTICE.txt
 
 
 %changelog
+* Thu Feb 16 2017 Mat Booth <mat.booth@redhat.com> - 3.4.1-12
+- Fix failure to build from source
+
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.1-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 3.4.1-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.4.1-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Mon Sep 01 2014 Michal Srb <msrb@redhat.com> - 3.4.1-8
+- Fix BR
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.4.1-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
